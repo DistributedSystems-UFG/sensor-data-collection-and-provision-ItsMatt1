@@ -8,6 +8,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,6 +33,8 @@ public class AccessSensorsActivity extends AppCompatActivity {
         //sensorInfoField.setText(deviceSensors.toString());
 
         LightSensorAccess lightSensorAccess = new LightSensorAccess(sensorManager, textView);
+
+        Log.d("Log", lightSensorAccess.toString());
 
 
     }

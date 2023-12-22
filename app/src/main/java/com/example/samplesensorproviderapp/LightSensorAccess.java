@@ -6,7 +6,14 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.widget.TextView;
 
+import com.hivemq.client.mqtt.datatypes.MqttQos;
+import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient;
+import com.hivemq.client.mqtt.mqtt5.Mqtt5Client;
+
+import java.util.UUID;
+
 public class LightSensorAccess implements SensorEventListener {
+    public static final String brokerURI = "ec2-34-194-22-234.compute-1.amazonaws.com";
     private SensorManager sensorManager;
     private Sensor mLight;
     private TextView sensor_field;
@@ -28,6 +35,19 @@ public class LightSensorAccess implements SensorEventListener {
         float lux = event.values[0];
         // Show luminosity value on the text field
         sensor_field.setText(String.valueOf(lux));
+
+        Mqtt5BlockingClient client = Mqtt5Client.builder()
+                .identifier(UUID.randomUUID().toString())
+                .serverHost(brokerURI)
+                .buildBlocking();
+
+        client.connect();
+        client.publishWith()
+                .topic("sensorMobile")
+                .qos(MqttQos.AT_LEAST_ONCE)
+                .payload(String.valueOf(lux).getBytes())
+                .send();
+        client.disconnect();
     }
 
     @Override
